@@ -1,71 +1,56 @@
-module test(clk,counter,in,out_H,out_L,data_shift1,data_shift2);
-	input clk;
-	output [3:0]counter;
-	output [7:0]data_shift1,data_shift2;
+module squash(clk,data_in,data_H,data_L);
+	input 				clk;
+	output reg [7:0]	data_in;
+	output reg [7:0]	data_H;
+	output reg [7:0]	data_L;
 	
-	output reg [7:0]in;
-	output [7:0]out_H;
-	output [7:0]out_L;
-	
-	
-	function [7:0]ROM;
-		input [3:0]in;
-		case(in)
-			0:ROM=8'h22;
-			1:ROM=8'h44;
-			2:ROM=8'h50;
-			3:ROM=8'h70;
-			4:ROM=8'h76;
-			5:ROM=8'h86;
-			6:ROM=8'h54;
-			7:ROM=8'h76;
-			8:ROM=8'h88;
-			9:ROM=8'h98;
-			10:ROM=8'h42;
-			11:ROM=8'h66;
-			12:ROM=8'h66;
-			13:ROM=8'h90;
-			14:ROM=8'h86;
-			default:ROM=8'h23;
+	reg [3:0]counter;
+	reg [7:0]data_even,data_odd;
+	reg [7:0]data_buffer_H;
+	reg [7:0]data_buffer_L;
+	 
+	function [7:0]ROM_data;
+		input [3:0]addr;
+		case(addr)
+			8'd0 : ROM_data = 22 ;
+			8'd1 : ROM_data = 44 ;
+			8'd2 : ROM_data = 50 ;
+			8'd3 : ROM_data = 70 ;
+			8'd4 : ROM_data = 76 ;
+			8'd5 : ROM_data = 86 ;
+			8'd6 : ROM_data = 54 ;
+			8'd7 : ROM_data = 76 ;
+			8'd8 : ROM_data = 88 ;
+			8'd9 : ROM_data = 98 ;
+			8'd10 : ROM_data = 42 ;
+			8'd11 : ROM_data = 66 ;
+			8'd12 : ROM_data = 66 ;
+			8'd13 : ROM_data = 90 ;
+			8'd14 : ROM_data = 86 ;
+			default: ROM_data = 0;
 		endcase
 	endfunction
 	
-	reg clk_div;
-	reg [3:0]counter;
-	reg [7:0]data_even,data_odd,data_L;
-	wire [7:0]data_shift1,data_shift2,data_H_ready,data_L_ready;
-	reg [7:0]data_H_finish;
-	reg [7:0]data_L_finish;
-	reg finish;
-	
-	always@(posedge clk)begin
-		in<=ROM(counter);
-		if(counter>=2)begin
-			if(counter[0])begin
-				data_even<=in;
-				data_L<=in;
-			end
-			else data_odd<=in;
-		end
+	always@(posedge clk)
 		counter<=counter+1;
-		clk_div<=counter[0];
+		
+	always@(posedge clk)
+	 data_in=ROM_data(counter);
+	
+	always@(posedge counter[0])begin
+		data_odd=data_in;
+		data_H=data_buffer_H-(data_odd>>1);
 	end
 	
-	assign data_shift1=data_even>>1;
-	assign data_H_ready=data_odd-data_shift1;
-
-	always@(posedge clk_div)begin
-		data_H_finish<=data_H_ready-data_shift1;
-		finish<=!finish;
-	end
-	assign data_shift2=data_H_finish>>2;
-	assign data_L_ready=data_L+data_shift2;
-	always@(posedge finish)begin
-		data_L_finish<=data_L_ready+data_shift2;
-		//finish<=!finish;
+	always@(negedge counter[0])begin
+		data_even=data_in;
+		data_buffer_H=data_even-(data_odd>>1);
+		data_buffer_L=data_odd+(data_H>>2);
 	end
 	
-	assign out_H=data_H_finish;
-	assign out_L=data_L_finish;
+	always@(negedge counter[0])begin
+		data_L=data_buffer_L+(data_H>>2);
+	end
+	
 	
 endmodule 
