@@ -4,14 +4,13 @@ module squash(
 	output reg [7:0]	data_H,
 	output reg [7:0]	data_L
 );	
-
+	
 	reg [3:0]	counter;
 	reg [7:0]	data_even;
 	reg [7:0]	data_odd;
 	reg [7:0]	data_buffer_H;
 	reg [7:0]	data_buffer_L;
-	
-	 
+	 //ROM Data
 	function [7:0]ROM_data;
 		input [3:0]addr;
 		case(addr)
@@ -33,26 +32,24 @@ module squash(
 			default: ROM_data = 0;
 		endcase
 	endfunction
-	
+	//資料計數，供ROM之Address讀取資料。
 	always@(posedge clk)		
 		counter=counter+1;
-		
+	//將ROM位置Address之資料讀取到data_in。
 	always@(posedge clk)
-	 data_in=ROM_data(counter);
-	
+		data_in=ROM_data(counter);
+	//資料switch,根據counter[0]，頻率clk/2。
+	always@(negedge counter[0])begin
+		data_even=data_in;						//偶數資料
+		data_buffer_H=data_even-(data_odd>>1);	//data_H運算(運算未完成)
+	end	
 	always@(posedge counter[0])begin
-		data_odd=data_in;
-		data_H=data_buffer_H-(data_odd>>1);
+		data_odd=data_in;						//奇數資料
+		data_H=data_buffer_H-(data_odd>>1);		//data_H運算(運算完成)
 	end
-	
 	always@(negedge counter[0])begin
-		data_even=data_in;
-		data_buffer_H=data_even-(data_odd>>1);
-		data_buffer_L=data_odd+(data_H>>2);
-	end
-	
-	always@(negedge counter[0])begin
-		data_L=data_buffer_L+(data_H>>2);
+		data_L=data_buffer_L+(data_H>>2);		//data_L運算(運算完成)
+		data_buffer_L=data_odd+(data_H>>2);		//data_L運算(運算未完成)
 	end
 	
 endmodule 
