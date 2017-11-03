@@ -1,13 +1,16 @@
-module squash(clk,data_in,data_H,data_L);
-	input 				clk;
-	output reg [7:0]	data_in;
-	output reg [7:0]	data_H;
-	output reg [7:0]	data_L;
+module squash(
+	input 				clk,
+	output reg [7:0]	data_in,
+	output reg [7:0]	data_H,
+	output reg [7:0]	data_L
+);	
+
+	reg [3:0]	counter;
+	reg [7:0]	data_even;
+	reg [7:0]	data_odd;
+	reg [7:0]	data_buffer_H;
+	reg [7:0]	data_buffer_L;
 	
-	reg [3:0]counter;
-	reg [7:0]data_even,data_odd;
-	reg [7:0]data_buffer_H;
-	reg [7:0]data_buffer_L;
 	 
 	function [7:0]ROM_data;
 		input [3:0]addr;
@@ -31,8 +34,8 @@ module squash(clk,data_in,data_H,data_L);
 		endcase
 	endfunction
 	
-	always@(posedge clk)
-		counter<=counter+1;
+	always@(posedge clk)		
+		counter=counter+1;
 		
 	always@(posedge clk)
 	 data_in=ROM_data(counter);
@@ -51,6 +54,5 @@ module squash(clk,data_in,data_H,data_L);
 	always@(negedge counter[0])begin
 		data_L=data_buffer_L+(data_H>>2);
 	end
-	
 	
 endmodule 
