@@ -117,8 +117,8 @@ module test(clk,Rom,counter,even,odd,
 		counter<=counter+6'b1;
 	end
 	
-	assign sub_H_1_in=even;
-	assign shift_H_in=odd;
+	assign sub_H_1_in=(counter[0]==1'b0)?even:0;
+	assign shift_H_in=(counter[0]==1'b1)?odd :0;
 	assign sub_H_2_in=reg_sub_H_2;
 	assign add_L_1_in=reg_data_L_2;
 	assign shift_L_in=sub_H_2_out;
@@ -127,15 +127,15 @@ module test(clk,Rom,counter,even,odd,
 	always@(counter)begin
 		if(counter[0]==1'b0&&clk==1'b1)even<=Rom;
 		if(counter[0]==1'b1&&clk==1'b1)odd<=Rom;
-		if(clk==1)reg_data_L_1<=Rom;
-		if(clk==1)reg_data_L_2<=reg_data_L_1;
 	end
+	
 	
 	always@(posedge clk)begin
 		reg_shift_H<=shift_H_out;
 		reg_sub_H_1<=sub_H_1_out;
 		reg_sub_H_2<=reg_sub_H_1;
-
+		reg_data_L_1<=Rom;
+		reg_data_L_2<=reg_data_L_1;
 		reg_shift_L<=shift_L_out;
 		reg_add_L_1<=add_L_1_out;
 		reg_add_L_2<=reg_add_L_1;
@@ -146,16 +146,15 @@ module test(clk,Rom,counter,even,odd,
 		sharp_reg1_2<=sharp_reg1_1;
 		sharp_reg1_3<=sharp_reg1_2;
 		sharp_reg1_4<=sharp_reg1_3;
-
 		sharp_reg2_1<=sub_H_2_out;
 		sharp_reg2_2<=sharp_reg2_1;
 		sharp_reg2_3<=sharp_reg2_2;
 		sharp_reg2_4<=sharp_reg2_3;
-
 		sharp_reg3_1<=add_L_2_out;
 		sharp_reg3_2<=sharp_reg3_1;
-		sharp_reg3_3<=sharp_reg2_2;
+		sharp_reg3_3<=sharp_reg3_2;
 		sharp_reg3_4<=sharp_reg3_3;
+		sharp_reg3_5<=sharp_reg3_4;
 	end
 
 endmodule 
