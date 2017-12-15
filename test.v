@@ -7,8 +7,9 @@ module test(clk,Rom,counter,even,odd,
 				shift_L_out,add_L_1_out,add_L_2_out,
 				shift_L_in ,add_L_1_in ,add_L_2_in ,
 				out_L,
-				reg_sub_L_1,reg_sub_L_2,
+				reg_add_L_1,reg_add_L_2,
 				reg_shift_L,reg_out_L,
+				reg_data_L_1,reg_data_L_2,
 				sharp_reg1_1,sharp_reg1_2,sharp_reg1_3,sharp_reg1_4,
 				sharp_reg2_1,sharp_reg2_2,sharp_reg2_3,sharp_reg2_4,
 				sharp_reg3_1,sharp_reg3_2,sharp_reg3_3,sharp_reg3_4,sharp_reg3_5
@@ -27,8 +28,10 @@ module test(clk,Rom,counter,even,odd,
 	output wire [7:0]shift_L_out,add_L_1_out,add_L_2_out;
 	output wire [7:0]shift_L_in ,add_L_1_in ,add_L_2_in ;
 	output wire [7:0]out_L;
-	output reg  [7:0]reg_sub_L_1,reg_sub_L_2;
+	output reg  [7:0]reg_add_L_1,reg_add_L_2;
 	output reg  [7:0]reg_shift_L,reg_out_L;
+	output reg  [7:0]reg_data_L_1,reg_data_L_2;
+	
 	
 	output reg  [7:0]sharp_reg1_1,sharp_reg1_2,sharp_reg1_3,sharp_reg1_4;
 	output reg  [7:0]sharp_reg2_1,sharp_reg2_2,sharp_reg2_3,sharp_reg2_4;
@@ -117,35 +120,42 @@ module test(clk,Rom,counter,even,odd,
 	assign sub_H_1_in=even;
 	assign shift_H_in=odd;
 	assign sub_H_2_in=reg_sub_H_2;
-	
-	
+	assign add_L_1_in=reg_data_L_2;
+	assign shift_L_in=sub_H_2_out;
+	assign add_L_2_in=reg_add_L_2;
 	
 	always@(counter)begin
 		if(counter[0]==1'b0&&clk==1'b1)even<=Rom;
 		if(counter[0]==1'b1&&clk==1'b1)odd<=Rom;
+		if(clk==1)reg_data_L_1<=Rom;
+		if(clk==1)reg_data_L_2<=reg_data_L_1;
 	end
 	
 	always@(posedge clk)begin
 		reg_shift_H<=shift_H_out;
 		reg_sub_H_1<=sub_H_1_out;
 		reg_sub_H_2<=reg_sub_H_1;
+
+		reg_shift_L<=shift_L_out;
+		reg_add_L_1<=add_L_1_out;
+		reg_add_L_2<=reg_add_L_1;
 	end
-	
+
 	always@(posedge clk)begin
 		sharp_reg1_1<=sub_H_1_in;
 		sharp_reg1_2<=sharp_reg1_1;
 		sharp_reg1_3<=sharp_reg1_2;
 		sharp_reg1_4<=sharp_reg1_3;
-		
+
 		sharp_reg2_1<=sub_H_2_out;
 		sharp_reg2_2<=sharp_reg2_1;
 		sharp_reg2_3<=sharp_reg2_2;
 		sharp_reg2_4<=sharp_reg2_3;
-		
+
 		sharp_reg3_1<=add_L_2_out;
 		sharp_reg3_2<=sharp_reg3_1;
 		sharp_reg3_3<=sharp_reg2_2;
 		sharp_reg3_4<=sharp_reg3_3;
 	end
-	
+
 endmodule 
