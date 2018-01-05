@@ -1,41 +1,69 @@
-module test(clk,Rom,counter,even,odd,
-				shift_H_out,sub_H_1_out,sub_H_2_out,
-				shift_H_in ,sub_H_1_in ,sub_H_2_in ,
-				out_H,
-				reg_sub_H_1,reg_sub_H_2,
-				reg_shift_H,reg_out_H,
-				shift_L_out,add_L_1_out,add_L_2_out,
-				shift_L_in ,add_L_1_in ,add_L_2_in ,
-				out_L,
-				reg_add_L_1,reg_add_L_2,
-				reg_shift_L,reg_out_L,
-				reg_data_L_1,reg_data_L_2,reg_data_L_3,
-				sharp_reg1_1,sharp_reg1_2,sharp_reg1_3,sharp_reg1_4,sharp_reg1_5,sharp_reg1_6,
-				sharp_reg2_1,sharp_reg2_2,sharp_reg2_3,sharp_reg2_4,sharp_reg2_5,sharp_reg2_6,
-				sharp_reg3_1,sharp_reg3_2,sharp_reg3_3,sharp_reg3_4,sharp_reg3_5
-				);
+module test(
+	clk,
+	Rom,
+	counter,
+	shift_H_in,
+	reg_shift_H,
+	sub_H_1_in,
+	sub_H_1_out,
+	reg_sub_H_1,
+	sub_H_2_in,
+	reg_sub_H_2,
+	sub_H_2_out,
+	out_H,
+	reg_data_L_1,
+	reg_data_L_2,
+	add_L_1_in,
+	add_L_1_out,
+	reg_add_L_1,
+	reg_add_L_2,
+	add_L_2_in,
+	add_L_2_out,
+	out_L
+		);
 	input clk;
-	output reg  [7:0]Rom;
-	output reg  [5:0]counter;
-	output reg  [7:0]even,odd;
+	output [7:0]Rom;
+	output [5:0]counter;
+	output [7:0]shift_H_in;
+	output [7:0]reg_shift_H;
+	output [7:0]sub_H_1_in;
+	output [7:0]sub_H_1_out;
+	output [7:0]reg_sub_H_1;
+	output [7:0]sub_H_2_in;
+	output [7:0]reg_sub_H_2;
+	output [7:0]sub_H_2_out;
+	output [7:0]out_H;
+	output [7:0]reg_data_L_1;
+	output [7:0]reg_data_L_2;
+	output [7:0]add_L_1_in;
+	output [7:0]add_L_1_out;
+	output [7:0]reg_add_L_1;
+	output [7:0]reg_add_L_2;
+	output [7:0]add_L_2_in;
+	output [7:0]add_L_2_out;
+	output [7:0]out_L;
+	//
+	reg  [7:0]Rom;
+	reg  [5:0]counter;
+	reg  [7:0]even,odd;
 
-	output wire [7:0]shift_H_out,sub_H_1_out,sub_H_2_out;
-	output wire [7:0]shift_H_in ,sub_H_1_in ,sub_H_2_in ;
-	output wire [7:0]out_H;
-	output reg  [7:0]reg_sub_H_1,reg_sub_H_2;
-	output reg  [7:0]reg_shift_H,reg_out_H;
+	wire [7:0]shift_H_out,sub_H_1_out,sub_H_2_out;
+	wire [7:0]shift_H_in ,sub_H_1_in ,sub_H_2_in ;
+	wire [7:0]out_H;
+	reg  [7:0]reg_sub_H_1,reg_sub_H_2;
+	reg  [7:0]reg_shift_H,reg_out_H;
 	
-	output wire [7:0]shift_L_out,add_L_1_out,add_L_2_out;
-	output wire [7:0]shift_L_in ,add_L_1_in ,add_L_2_in ;
-	output wire [7:0]out_L;
-	output reg  [7:0]reg_add_L_1,reg_add_L_2;
-	output reg  [7:0]reg_shift_L,reg_out_L;
-	output reg  [7:0]reg_data_L_1,reg_data_L_2,reg_data_L_3;
+	wire [7:0]shift_L_out,add_L_1_out,add_L_2_out;
+	wire [7:0]shift_L_in ,add_L_1_in ,add_L_2_in ;
+	wire [7:0]out_L;
+	reg  [7:0]reg_add_L_1,reg_add_L_2;
+	reg  [7:0]reg_shift_L,reg_out_L;
+	reg  [7:0]reg_data_L_1,reg_data_L_2,reg_data_L_3;
 	
 	
-	output reg  [7:0]sharp_reg1_1,sharp_reg1_2,sharp_reg1_3,sharp_reg1_4,sharp_reg1_5,sharp_reg1_6;
-	output reg  [7:0]sharp_reg2_1,sharp_reg2_2,sharp_reg2_3,sharp_reg2_4,sharp_reg2_5,sharp_reg2_6;
-	output reg  [7:0]sharp_reg3_1,sharp_reg3_2,sharp_reg3_3,sharp_reg3_4,sharp_reg3_5;
+	reg  [7:0]sharp_reg1_1,sharp_reg1_2,sharp_reg1_3,sharp_reg1_4,sharp_reg1_5,sharp_reg1_6;
+	reg  [7:0]sharp_reg2_1,sharp_reg2_2,sharp_reg2_3,sharp_reg2_4,sharp_reg2_5,sharp_reg2_6;
+	reg  [7:0]sharp_reg3_1,sharp_reg3_2,sharp_reg3_3,sharp_reg3_4,sharp_reg3_5;
 	//
 	assign shift_H_out=shift_H_in>>1;
 	assign sub_H_1_out=sub_H_1_in-reg_shift_H;
